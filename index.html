@@ -405,6 +405,9 @@
         <input type="email" name="email" placeholder="Email" required />
         <input type="tel" name="phone" placeholder="Phone Number" required />
         <button type="submit">SUBMIT</button>
+
+
+        <div id="formLoader" class="loader-spinner" style="display: none;"></div>
       </form>
     </section>
 
@@ -522,9 +525,11 @@
 
 
 const form = document.getElementById('agentForm');
+const loader = document.getElementById('formLoader');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+  loader.style.display = 'block'; // Show loader
 
   const data = {
     firstName: form.elements['firstName'].value,
@@ -533,19 +538,26 @@ form.addEventListener('submit', async (e) => {
     phone: form.elements['phone'].value,
   };
 
-  const res = await fetch('https://konasal-backend.onrender.com/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
+  try {
+    const res = await fetch('https://konasal-backend.onrender.com/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
 
-  if (res.ok) {
-    alert('Form submitted successfully!');
-    form.reset();
-  } else {
-    alert('Failed to submit form.');
+    if (res.ok) {
+      alert('✅ Form submitted successfully!');
+      form.reset();
+    } else {
+      alert('❌ Submission failed.');
+    }
+  } catch (err) {
+    alert('❌ An error occurred.');
+  } finally {
+    loader.style.display = 'none'; // Hide loader
   }
 });
+
 
 
 </script>
