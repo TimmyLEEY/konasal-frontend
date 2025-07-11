@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <link rel="stylesheet" href="styles.css">
-  <title>Landing-Page</title>
+  <title>Landing-Page.</title>
 </head>
 
 <body>
@@ -533,7 +533,7 @@ form.addEventListener('submit', async (e) => {
     phone: form.elements['phone'].value,
   };
 
-  const res = await fetch('http://localhost:5000/send', {
+  const res = await fetch('https://konasal-backend.onrender.com/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
