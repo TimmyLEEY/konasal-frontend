@@ -7,6 +7,49 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <link rel="stylesheet" href="styles.css">
+    <style>
+    /* Toast Alert Styles */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .toast {
+      background-color: #333;
+      color: #fff;
+      padding: 12px 20px;
+      margin-top: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0.95;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      animation: fadein 0.3s ease, fadeout 0.3s ease 3.7s;
+    }
+
+    .toast.success {
+      background-color: #28a745;
+    }
+
+    .toast.error {
+      background-color: #dc3545;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeout {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  </style>
   <title>Landing-Page.</title>
 </head>
 
@@ -383,22 +426,21 @@
       </p>
     </section>
 
-    <section id="form1" class="agent-form-section">
-      <h2>LIFE INSURANCE AGENT FORM</h2>
-      <form id="agentForm" class="agent-form">
-        <div class="form-row">
-          <input type="text" name="firstName" placeholder="First Name" required />
-          <input type="text" name="lastName" placeholder="Last Name" required />
-        </div>
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="tel" name="phone" placeholder="Phone Number" required />
-        <button type="submit">SUBMIT</button>
+   <section id="form1" class="agent-form-section">
+    <h2>LIFE INSURANCE AGENT FORM</h2>
+    <form id="agentForm" class="agent-form">
+      <div class="form-row">
+        <input type="text" name="firstName" placeholder="First Name" required />
+        <input type="text" name="lastName" placeholder="Last Name" required />
+      </div>
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="tel" name="phone" placeholder="Phone Number" required />
+      <button type="submit">SUBMIT</button>
+      <div id="formLoader" class="loader-spinner" style="display: none;"></div>
+    </form>
+  </section>
 
-
-        <div id="formLoader" class="loader-spinner" style="display: none;"></div>
-      </form>
-    </section>
-
+   <div class="toast-container" id="toastContainer"></div>
 
 
 
@@ -473,7 +515,6 @@
     button.addEventListener('click', () => {
       const content = button.nextElementSibling;
 
-      // Close all others
       document.querySelectorAll('.offer-content').forEach(el => {
         if (el !== content) {
           el.classList.remove('open');
@@ -481,7 +522,6 @@
         }
       });
 
-      // Toggle this one
       content.classList.toggle('open');
       button.classList.toggle('active');
     });
@@ -493,7 +533,6 @@
   toggleButton.addEventListener('click', () => {
     navLinks.classList.toggle('open');
   });
-
 
   const track = document.getElementById('testimonialTrack');
   const slides = track.children;
@@ -515,16 +554,14 @@
 
   prevBtn.addEventListener('click', () => goToSlide(index - 1));
   nextBtn.addEventListener('click', () => goToSlide(index + 1));
-
   setInterval(autoSlide, 4000);
-
 
   const form = document.getElementById('agentForm');
   const loader = document.getElementById('formLoader');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    loader.style.display = 'block'; // Show loader
+    loader.style.display = 'block';
 
     const data = {
       firstName: form.elements['firstName'].value,
@@ -541,18 +578,49 @@
       });
 
       if (res.ok) {
-        alert('✅ Form submitted successfully!');
+        showToast('✅ Form submitted successfully!', 'success');
         form.reset();
       } else {
-        alert('❌ Submission failed.');
+        showToast('❌ Submission failed.', 'error');
       }
     } catch (err) {
-      alert('❌ An error occurred.');
+      showToast('❌ An error occurred.', 'error');
     } finally {
-      loader.style.display = 'none'; // Hide loader
+      loader.style.display = 'none';
     }
   });
 
+  // Toast function
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `custom-toast ${type}`;
+    toast.textContent = message;
 
+    Object.assign(toast.style, {
+      position: 'fixed',
+      bottom: '30px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      backgroundColor: type === 'success' ? '#28a745' : '#dc3545',
+      color: '#fff',
+      padding: '12px 20px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+      fontWeight: 'bold',
+      zIndex: 10000,
+      opacity: 0,
+      transition: 'opacity 0.4s ease'
+    });
 
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = 1;
+    }, 100);
+
+    setTimeout(() => {
+      toast.style.opacity = 0;
+      setTimeout(() => document.body.removeChild(toast), 400);
+    }, 4000);
+  }
 </script>

@@ -336,6 +336,9 @@ html{
   .reason-card {
     flex: 0 0 100%;
   }
+  .section-header h2{
+    font-size: 0.5rem;
+  }
 }
 hr{
   color: black;
